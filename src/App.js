@@ -6,17 +6,32 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: socket.id,
       message: '',
       messages: []
     };
   }
 
   componentWillMount() {
-    socket.onopen.subscribe(data => {
-      console.log("on open ", data)
+    socket.connect();
+
+    socket.onconnect.subscribe(data => {
+      console.log('onconnect', data)
+      this.setState({ 
+        id: data,
+        messages: this.state.messages.concat([{
+          message: "/The socket connection has been established"
+        }])
+      });
     });
+
     socket.onmessage.subscribe(data => {
-      console.log("on message ", data)
+      this.setState({
+        messages: this.state.messages.concat([{
+          message: data.content,
+          sender: data.sender
+        }])
+      });
     });
   }
 
@@ -31,28 +46,31 @@ class App extends Component {
     }
   }
 
-  displayMessages = () => {
-    const messages = [];
-    
-    this.state.messages.forEach((message, index) => {
-      if (message.startsWith("/"))
-        messages.push(`<strong id={${index}}>${message.substring(1)}</strong>`)
-      else
-        messages.push(`<p id={${index}}>${message.substring(1)}</p>`)
-    });
-    
-    return messages;
-  }
-
   render() {
+    const messages = this.state.messages.map((message, index) =>
+      message.sender ?
+      <p key={index}>
+        <span className="sender">{message.sender}</span><br/>
+        {message.message}
+      </p> :
+      <p className="system" key={index}>{message.message.substring(1)}</p>);
+
     return (
-      <div className="App">
-        <ul id="messages">
-            <li>
-              <span></span>
-            </li>
-        </ul>
-        <input onChange={e => this.setState({message: e.target.value})} />
+      <div className="container">
+        <h2>React Chat App + Golang Websocket Server</h2>
+
+        <div id="id">
+          <small>ID: </small>
+          <input value={this.state.id}/>
+        </div>
+
+        <div id="messages">
+          {messages}
+        </div>
+        <input
+          id="chatBox"
+          onChange={e => this.setState({message: e.target.value})}
+          value={this.state.message} />
         <button onClick={this.send}>Send</button>
       </div>
     );

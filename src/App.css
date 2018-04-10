@@ -1,23 +1,35 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+h2 {
+  color: orange;
+  text-align: center;
 }
 
-body {
-  font: 13px Helvetica, Arial;
+.sender {
+  font-weight: bold;
+}
+
+.system {
+  color: orange;
+  font-weight: bold;
+  text-align: center;
+}
+
+#chatBox {
+  margin-top: 20px;
+  padding: 5px 20px;
+  width: 75%;
+}
+
+#id {
+  margin: 10px 0;
 }
 
 #messages {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-#messages li {
-  padding: 5px 10px;
-}
-
-#messages li:nth-child(odd) {
-  background: #eee;
+  background-color: rgba(255, 165, 0, 0.1);
+  border-radius: 10px;
+  font-size: 0.9em;
+  height: 50%;
+  min-height: 100px;
+  width: 75%;
+  padding: 20px;
+  overflow: auto;
 }
